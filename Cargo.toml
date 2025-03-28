@@ -1,0 +1,34 @@
+[package]
+name = "uqoin-js"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen = { version = "0.2.100", features = ["serde-serialize"] }
+uqoin-core = { path = "../uqoin-core", features = ["base"] }
+getrandom = { version = "0.3.2", features = ["wasm_js"] }
+
+# js-sys = "0.3.77"
+# wasm-bindgen-futures = "0.4.50"
+# serde = { version = "1.0.219", features = ["derive"] }
+# serde_derive = "1.0.219"
+
+# [dependencies.web-sys]
+# version = "0.3.77"
+# features = [
+#   'Headers',
+#   'Request',
+#   'RequestInit',
+#   'RequestMode',
+#   'Response',
+#   'Window',
+#   'Storage',
+#   'console',
+# ]
+
+# Not working...
+# [target.wasm32-unknown-unknown]
+# rustflags = ['--cfg', 'getrandom_backend="wasm_js"']
