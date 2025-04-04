@@ -16,6 +16,16 @@ pub fn hashOfU256(elems: &str) -> String {
 }
 
 
+/// Represent string as bytes array with fixed size.
+pub fn str_to_bytes<const N: usize>(s: &str) -> [u8; N] {
+    let bytes = s.as_bytes();
+    let size = std::cmp::min(bytes.len(), N);
+    let mut buffer = [0u8; N];
+    buffer[..size].clone_from_slice(&bytes[..size]);
+    buffer
+}
+
+
 #[cfg(test)]
 mod tests {
     use super::*;
