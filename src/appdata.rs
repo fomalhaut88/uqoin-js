@@ -44,16 +44,13 @@ impl AppData {
         Self::new(seed.value())
     }
 
-    pub fn load(encrypted: &str, password: &str) -> Option<Self> {
-        // Convert from HEX to bytes
-        let bytes: &[u8] = b"";  // ...
-
+    pub fn load(encrypted: &[u8], password: &str) -> Option<Self> {
         // Initialize cipher with the password
         let key = GenericArray::from(str_to_bytes::<16>(password));
         let cipher = Aes128::new(&key);
 
         // Prepare blocks to decrypt
-        let blocks: Vec<_> = bytes.chunks(16)
+        let blocks: Vec<_> = encrypted.chunks(16)
             .map(|chunk| GenericArray::from(
                 TryInto::<[u8; 16]>::try_into(chunk).unwrap()
             )).collect();
@@ -79,7 +76,7 @@ impl AppData {
         }
     }
 
-    pub fn dump(&self, password: &str) -> String {
+    pub fn dump(&self, password: &str) -> Vec<u8> {
         // Initialize cipher with the password
         let key = GenericArray::from(str_to_bytes::<16>(password));
         let cipher = Aes128::new(&key);
@@ -101,11 +98,7 @@ impl AppData {
         cipher.encrypt_blocks(&mut encrypted);
 
         // Return bytes
-        let bytes = encrypted.concat();
-
-        // Convert bytes to hex
-        bytes.iter().map(|b| format!("{:02x}", b))
-                    .collect::<Vec<String>>().join("")
+        encrypted.concat()
     }
 
     pub fn isEmpty(&self) -> bool {
