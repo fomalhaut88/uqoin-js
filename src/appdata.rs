@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use serde::{Serialize, Deserialize};
 use wasm_bindgen::prelude::*;
 use aes::Aes128;
@@ -13,12 +15,20 @@ use crate::utils::str_to_bytes;
 #[derive(Clone, Serialize, Deserialize)]
 pub struct AppData {
     seed: U256,
+    wallets_map: HashMap<String, U256>,
+    wallets_seq: Vec<String>,
+    validators: Vec<String>,
 }
 
 
 impl AppData {
     pub fn new(seed: U256) -> Self {
-        Self { seed }
+        Self {
+            seed,
+            wallets_map: HashMap::new(),
+            wallets_seq: Vec::new(),
+            validators: Vec::new(),
+        }
     }
 }
 
@@ -117,5 +127,36 @@ impl AppData {
         let seed = Seed::from_value(&self.seed);
         let mnemonic = seed.mnemonic();
         mnemonic.join(" ")
+    }
+
+    pub fn getNodes(&self) -> Vec<String> {
+        self.validators.clone()
+    }
+
+    pub fn addNode(&mut self, node: &str) -> bool {
+        if self.validators.iter().position(|n| n == node).is_none() {
+            self.validators.push(node.to_string());
+            true
+        } else {
+            false
+        }
+    }
+
+    pub fn removeNode(&mut self, node: &str) -> bool {
+        if let Some(pos) = self.validators.iter().position(|n| n == node) {
+            self.validators.remove(pos);
+            true
+        } else {
+            false
+        }
+    }
+
+    pub fn moveNode(&mut self, node: &str, pos: usize) -> bool {
+        if self.removeNode(node) {
+            self.validators.insert(pos, node.to_string());
+            true
+        } else {
+            false
+        }
     }
 }

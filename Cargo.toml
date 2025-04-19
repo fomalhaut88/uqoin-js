@@ -8,7 +8,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 wasm-bindgen = { version = "0.2.100", features = ["serde-serialize"] }
-uqoin-core = { path = "../uqoin-core" }
+uqoin-core = "0.1.0"
 getrandom = { version = "0.3.2", features = ["wasm_js"] }
 serde = { version = "1.0.219", features = ["derive"] }
 rand = "0.9.0"
