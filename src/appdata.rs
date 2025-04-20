@@ -7,6 +7,7 @@ use aes::cipher::{BlockEncrypt, BlockDecrypt, KeyInit};
 use aes::cipher::generic_array::GenericArray;
 use uqoin_core::utils::U256;
 use uqoin_core::seed::{Seed, Mnemonic};
+use uqoin_core::schema::Schema;
 
 use crate::utils::str_to_bytes;
 
@@ -158,5 +159,24 @@ impl AppData {
         } else {
             false
         }
+    }
+
+    pub fn moreWallets(&mut self, count: usize) {
+        let schema = Schema::new();
+        let seed = Seed::from_value(&self.seed);
+        for key in seed.gen_keys(&schema).skip(self.wallets_seq.len())
+                       .take(count) {
+            let public = schema.get_public(&key).to_hex();
+            self.wallets_seq.push(public.clone());
+            self.wallets_map.insert(public, key);
+        }
+    }
+
+    pub fn getWallets(&self) -> Vec<String> {
+        self.wallets_seq.clone()
+    }
+
+    pub fn getWalletKey(&self, wallet: &str) -> Option<String> {
+        self.wallets_map.get(wallet).map(|key| key.to_hex())
     }
 }

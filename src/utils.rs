@@ -1,5 +1,6 @@
 use wasm_bindgen::prelude::*;
 use uqoin_core::utils::{U256, hash_of_u256};
+use uqoin_core::coin::coin_symbol;
 
 
 /// Hash a sequence of U256 numbers given as their concatenated HEX string.
@@ -23,6 +24,13 @@ pub fn str_to_bytes<const N: usize>(s: &str) -> [u8; N] {
     let mut buffer = [0u8; N];
     buffer[..size].clone_from_slice(&bytes[..size]);
     buffer
+}
+
+
+/// Get coin symbol by order
+#[wasm_bindgen]
+pub fn coinSymbol(order: usize) -> String {
+    coin_symbol(order as u64)
 }
 
 
