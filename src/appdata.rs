@@ -8,6 +8,7 @@ use aes::cipher::generic_array::GenericArray;
 use uqoin_core::utils::U256;
 use uqoin_core::seed::{Seed, Mnemonic};
 use uqoin_core::schema::Schema;
+use uqoin_core::transaction::Transaction;
 
 use crate::utils::str_to_bytes;
 
@@ -178,5 +179,17 @@ impl AppData {
 
     pub fn getWalletKey(&self, wallet: &str) -> Option<String> {
         self.wallets_map.get(wallet).map(|key| key.to_hex())
+    }
+
+    pub fn sign(&self, wallet: &str, addr: &str, coin: &str, 
+                counter: u32) -> String {
+        let key = &self.wallets_map[wallet];
+        let hash = Transaction::calc_msg(&U256::from_hex(coin), 
+                                         &U256::from_hex(addr), 
+                                         counter as u64);
+        let schema = Schema::new();
+        let mut rng = rand::rng();
+        let (sign_r, sign_s) = schema.build_signature(&mut rng, &hash, key);
+        format!("{}{}", sign_r.to_hex(), sign_s.to_hex())
     }
 }
