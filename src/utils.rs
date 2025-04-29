@@ -1,6 +1,6 @@
 use wasm_bindgen::prelude::*;
 use uqoin_core::utils::{U256, hash_of_u256};
-use uqoin_core::coin::coin_symbol;
+use uqoin_core::coin::{coin_symbol, coin_random, coin_order};
 
 
 /// Hash a sequence of U256 numbers given as their concatenated HEX string.
@@ -31,6 +31,23 @@ pub fn str_to_bytes<const N: usize>(s: &str) -> [u8; N] {
 #[wasm_bindgen]
 pub fn coinSymbol(order: usize) -> String {
     coin_symbol(order as u64)
+}
+
+
+/// Mine a coin for the specific miner (given as wallet) starting from the order
+/// `minOrder` in `attempts` attempts.
+#[wasm_bindgen]
+pub fn mineCoin(wallet: &str, minOrder: u32, 
+                attempts: usize) -> Option<String> {
+    let miner = U256::from_hex(wallet);
+    let mut rng = rand::rng();
+    for _ in 0..attempts {
+        let coin = coin_random(&mut rng, &miner);
+        if coin_order(&coin, &miner) >= minOrder as u64 {
+            return Some(coin.to_hex());
+        }
+    }
+    None
 }
 
 
