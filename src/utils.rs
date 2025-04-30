@@ -51,6 +51,15 @@ pub fn mineCoin(wallet: &str, minOrder: u32,
 }
 
 
+/// Get coin symbol by order
+#[wasm_bindgen]
+pub fn coinOrder(coin: &str, miner: &str) -> usize {
+    let coin = U256::from_hex(coin);
+    let miner = U256::from_hex(miner);
+    coin_order(&coin, &miner) as usize
+}
+
+
 #[cfg(test)]
 mod tests {
     use super::*;
