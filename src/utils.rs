@@ -27,7 +27,7 @@ pub fn str_to_bytes<const N: usize>(s: &str) -> [u8; N] {
 }
 
 
-/// Get coin symbol by order
+/// Get coin symbol by order.
 #[wasm_bindgen]
 pub fn coinSymbol(order: usize) -> String {
     coin_symbol(order as u64)
@@ -51,12 +51,19 @@ pub fn mineCoin(wallet: &str, minOrder: u32,
 }
 
 
-/// Get coin symbol by order
+/// Get coin order by number and miner.
 #[wasm_bindgen]
 pub fn coinOrder(coin: &str, miner: &str) -> usize {
     let coin = U256::from_hex(coin);
     let miner = U256::from_hex(miner);
     coin_order(&coin, &miner) as usize
+}
+
+
+/// Get XOR hash of coins.
+#[wasm_bindgen]
+pub fn coinsXor(coins: Vec<String>) -> String {
+    coins.iter().fold(U256::from(0), |x, s| &x ^ &U256::from_hex(s)).to_hex()
 }
 
 
